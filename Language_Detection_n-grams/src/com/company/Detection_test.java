@@ -3,6 +3,7 @@ package com.company;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static com.company.Detection_train.OutOfPlaceScore;
@@ -11,7 +12,7 @@ import static com.company.Detection_train.PrepareProfile;
 
 public class Detection_test {
 
-    static final String Language_path = "extra_Language_Models_Serialized_top_600_K_10000/";
+    static final String Language_path = "Language_Detection_n-grams/extra_Language_Models_Serialized_top_600_K_10000";
     static HashMap<String, List<String>> LanguageProfiles = new HashMap<String, List<String>>();
 
     public static String get_Language(String test,StanfordCoreNLP pipeline) throws IOException {
@@ -22,7 +23,6 @@ public class Detection_test {
         List<String> TestProfile = PrepareProfile(test, pipeline);
 
         File folder = new File(Language_path);
-
         for (File file : folder.listFiles()) {
 
                 ArrayList<String> Language_Profile = new ArrayList<String>();
@@ -53,7 +53,7 @@ public class Detection_test {
 
                     //System.out.println(Language_Profile.subList(0,50));
                     optimumscore = score;
-                    detected = file.toString().split("/")[1];
+                    detected = file.toString().split("/")[0];
                     //System.out.println(detected);
                 }
             }

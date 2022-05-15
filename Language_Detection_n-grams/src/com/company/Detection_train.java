@@ -27,10 +27,10 @@ public class Detection_train {
         //Reading the Language Documents
         File folder = new File(Language_path);
 
-        for (File subdirec : folder.listFiles()) {
+        for (File subdirec : Objects.requireNonNull(folder.listFiles())) {
             if (subdirec.isDirectory()) {
 
-                System.out.println("Reading " + subdirec+".........");
+                System.out.println("Reading " + subdirec+"........we.");
                 File[] listOfFiles = subdirec.listFiles();
                 String text = "";
                 for (int i = 0; i < listOfFiles.length; i++) {
