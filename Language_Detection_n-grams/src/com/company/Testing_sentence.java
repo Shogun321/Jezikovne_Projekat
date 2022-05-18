@@ -9,7 +9,6 @@ import java.util.Scanner;
 public class Testing_sentence
 {
     public static void main(String[] args) throws IOException {
-
         Scanner scanner = new Scanner(System.in);
 
         Properties props = new Properties();
