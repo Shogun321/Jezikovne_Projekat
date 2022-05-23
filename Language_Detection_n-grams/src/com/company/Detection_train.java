@@ -99,6 +99,7 @@ public class Detection_train {
         //text=parts[0].concat(parts[1]);
 
         Annotation document = new Annotation(text);
+        text=null;
         pipeline.annotate(document);
         List<CoreLabel> tokens = document.get(TokensAnnotation.class);
         document=null;
@@ -122,6 +123,7 @@ public class Detection_train {
 
 
     public static List<String> PrepareProfile(String test, StanfordCoreNLP pipeline) {
+
         HashMap<String, Integer> TwoGrams = getNgrams(test, 2, pipeline);
         HashMap<String, Integer> ThreeGrams = getNgrams(test, 3, pipeline);
         TwoGrams.putAll(ThreeGrams);
@@ -129,7 +131,7 @@ public class Detection_train {
         //Sort HashMap according to frequency
         Set<Map.Entry<String, Integer>> set = TwoGrams.entrySet();
 
-        List<Map.Entry<String, Integer>> list = new ArrayList<>(set);
+        List<Map.Entry<String, Integer>> list = new ArrayList<Map.Entry<String, Integer>>(set);
 
         try {
             Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
