@@ -28,7 +28,7 @@ public class Testing_test_data {
         props.put("annotators", "tokenize");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
-        String test_path = "data/testing_data_sample";
+        String test_path = "B:\\skola\\FERI\\Jezikovne tehnologije\\Seminarska\\GithubCode\\Language_Detection_n-grams\\dslcc4_Korpus\\DSL-DEV.txt";//"data/testing_data_sample";
 
         BufferedReader br = new BufferedReader(new FileReader(test_path));
 
@@ -71,8 +71,7 @@ public class Testing_test_data {
                 //System.out.println(count);
             }
         } catch (IOException e) {
-
-
+            System.out.println(e);
         } finally {
             br.close();
         }
