@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="edu.stanford.nlp.corenlp" level="project" />
+    <orderEntry type="library" name="me.tongfei.progressbar" level="project" />
   </component>
 </module>

@@ -1,18 +1,17 @@
 package com.company;
 
-import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.util.CoreMap;
+
 import java.io.*;
 import java.util.*;
 
 
 public class Detection_train {
 
-    static final String Language_path = "data/";
+    static final String Language_path = "B:\\skola\\FERI\\Jezikovne tehnologije\\Seminarska\\GithubCode\\Language_Detection_n-grams\\dslcc4_Korpus";//"data/";
     static HashMap<String, List<String>> LanguageProfiles = new HashMap<String, List<String>>();
 
     public static void main(String[] args) throws IOException {
@@ -26,34 +25,39 @@ public class Detection_train {
         int optimumscore=1000000;
         //Reading the Language Documents
         File folder = new File(Language_path);
-
-        for (File subdirec : Objects.requireNonNull(folder.listFiles())) {
+        System.out.println(folder);
+        for (File subdirec : folder.listFiles()) {
             if (subdirec.isDirectory()) {
-
                 System.out.println("Reading " + subdirec+"........we.");
                 File[] listOfFiles = subdirec.listFiles();
                 String text = "";
-                for (int i = 0; i < listOfFiles.length; i++) {
-                    File file = listOfFiles[i];
+                for (File file : listOfFiles) {
                     if (file.isFile() && file.getName().endsWith(".txt")) {
-
                         BufferedReader br = new BufferedReader(new FileReader(subdirec + "/" +
                                 file.getName()));
-
+                        System.out.println("Reading " + file + " something.");
                         try {
                             String line = br.readLine();
-                            while (line != null) {
+                            //int j =0;
+                            while (line != null) {//line != null j++<5000
                                 if (line.length() > 1) {
                                     //System.out.println(line);
-                                    text += line;
+                                    text += line.replaceAll("\\d+", "")
+                                            .replaceAll("<.*?>", "")
+                                            .replaceAll("[&\\/\\\\#,+()$~%.\":*?!<>{}]", "")
+                                            .replaceAll("\\s+", " ")
+                                            .trim()
+                                            .toLowerCase();
                                 }
                                 line = br.readLine();
                             }
-                        } finally {
-                            br.close();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
                         }
+                        br.close();
                     }
-                }
+
+                }//end of external for
 
                 System.out.println("Preparing Language Model......");
                 List<String> LanguageProfile = PrepareProfile(text, pipeline);
@@ -61,13 +65,16 @@ public class Detection_train {
                 System.out.println("Serializing Language Model......" + "\n\n");
                 //Serialize the language profile
                 try{
-                    FileOutputStream fos= new FileOutputStream("Language_Models_Serialized_top_600_K_10000/"+
-                            subdirec.toString().split("/")[1]);
-
+                    System.out.println("Language_Models_Serialized_top_600_K_10000/"+
+                            subdirec.toString().split("/")[0]);
+                    FileOutputStream fos= new FileOutputStream("Language_Models_Serialized_top_600_K_10000/"
+                            );
+                    System.out.println(LanguageProfile.size());
                     ObjectOutputStream oos= new ObjectOutputStream(fos);
                     oos.writeObject(LanguageProfile);
                     oos.close();
                     fos.close();
+
                 }catch(IOException ioe){
                     ioe.printStackTrace();
                 }
@@ -88,20 +95,13 @@ public class Detection_train {
 
 
     public static HashMap<String, Integer> getNgrams(String text, int n, StanfordCoreNLP pipeline) {
+        HashMap<String, Integer> Ngrams = new HashMap<>();
+        //text=parts[0].concat(parts[1]);
 
-        HashMap<String, Integer> Ngrams = new HashMap<String, Integer>();
-        String content = text
-                .replaceAll("\\d+", "")
-                .replaceAll("<.*?>", "")
-                .replaceAll("[&\\/\\\\#,+()$~%.\":*?!<>{}]", "")
-                .replaceAll("\\s+", " ")
-                .trim()
-                .toLowerCase();
-
-        Annotation document = new Annotation(content);
+        Annotation document = new Annotation(text);
         pipeline.annotate(document);
         List<CoreLabel> tokens = document.get(TokensAnnotation.class);
-
+        document=null;
         for (int i = 0; i < tokens.size() - (n - 1); i++) {
             String gram = "";
             for (int j = i; j < i + n; j++) {
@@ -117,10 +117,11 @@ public class Detection_train {
         }
         return Ngrams;
     }
+//Potential quick fixes: https://stackoverflow.com/questions/37335/how-to-deal-with-java-lang-outofmemoryerror-java-heap-space-error
+    //https://stackoverflow.com/questions/47974590/stanford-corenlp-exception-in-thread-main-java-lang-outofmemoryerror-java-h
 
 
     public static List<String> PrepareProfile(String test, StanfordCoreNLP pipeline) {
-
         HashMap<String, Integer> TwoGrams = getNgrams(test, 2, pipeline);
         HashMap<String, Integer> ThreeGrams = getNgrams(test, 3, pipeline);
         TwoGrams.putAll(ThreeGrams);
@@ -128,7 +129,7 @@ public class Detection_train {
         //Sort HashMap according to frequency
         Set<Map.Entry<String, Integer>> set = TwoGrams.entrySet();
 
-        List<Map.Entry<String, Integer>> list = new ArrayList<Map.Entry<String, Integer>>(set);
+        List<Map.Entry<String, Integer>> list = new ArrayList<>(set);
 
         try {
             Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
