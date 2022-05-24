@@ -10,8 +10,8 @@ import java.util.*;
 
 
 public class Detection_train {
-
-    static final String Language_path = "B:\\skola\\FERI\\Jezikovne tehnologije\\Seminarska\\GithubCode\\Language_Detection_n-grams\\dslcc4_Korpus";//"data/";
+    static final String Language_path = "B:\\skola\\FERI\\Jezikovne tehnologije\\korpus";//"data/";
+    //B:\skola\FERI\Jezikovne tehnologije\Seminarska\GithubCode\Language_Detection_n-grams\dslcc4_Korpus
     static HashMap<String, List<String>> LanguageProfiles = new HashMap<String, List<String>>();
 
     public static void main(String[] args) throws IOException {
@@ -19,7 +19,6 @@ public class Detection_train {
         Properties props = new Properties();
         props.put("annotators", "tokenize");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-
 
         String detected="";
         int optimumscore=1000000;
@@ -38,8 +37,8 @@ public class Detection_train {
                         System.out.println("Reading " + file + " something.");
                         try {
                             String line = br.readLine();
-                            //int j =0;
-                            while (line != null) {//line != null j++<5000
+                            int j =0;
+                            while (j++<50000) {//line != null j++<50000
                                 if (line.length() > 1) {
                                     //System.out.println(line);
                                     text += line.replaceAll("\\d+", "")

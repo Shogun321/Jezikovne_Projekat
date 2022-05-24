@@ -39,10 +39,10 @@ public class Testing_test_data {
 
         try {
             String line = br.readLine();
+
             while (line != null) {
-
+                System.out.println(line);
                 if (line.length() > 1) {
-
                     String actual_label = line.substring(0,2);
 
                     if(languages_to_consider.contains(actual_label)) {
@@ -60,7 +60,7 @@ public class Testing_test_data {
 
                         if(actual_label.equals("cs") && predicted_label.equals("sk")){
 
-                            System.out.println(text);
+                            //System.out.println(text);
                         }
 
                         count++;
@@ -68,7 +68,7 @@ public class Testing_test_data {
                 }
 
                 line = br.readLine();
-                //System.out.println(count);
+
             }
         } catch (IOException e) {
             System.out.println(e);
